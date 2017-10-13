@@ -16,6 +16,8 @@ module Haml
 
     IGNORED_TYPES = %i[on_sp on_ignored_nl]
 
+    TOKEN_INDEX = RUBY_VERSION >= '2.5.0' ? -2 : -1
+
     class << self
       # @return [Boolean] - return true if AttributeParser.parse can be used.
       def available?
@@ -100,7 +102,7 @@ module Haml
 
         each_balaned_tokens(all_tokens) do |tokens|
           key   = shift_key!(tokens)
-          value = tokens.map(&:last).join.strip
+          value = tokens.map { |token| token[TOKEN_INDEX] }.join.strip
           block.call(key, value)
         end
       end
